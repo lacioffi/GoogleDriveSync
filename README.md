@@ -8,6 +8,8 @@ At the end, a full CSV list will be giving relating the old file locations (file
 This script does not delete, move or edit files in the source drive. It only copies the files into the destination drive. 
 This script was not tested for other situations (e.g. copying a folder into another folder). Use at your own risk.
 
+This script does NOT preserve permissions at the file or folder level. All files copied will only be available to the drive's viewers/managers/editors.
+
 ## Installation
 Install the necessary libraries:
 

@@ -5,6 +5,7 @@ from google.oauth2 import service_account
 from oauth2client.service_account import ServiceAccountCredentials
 import argparse
 import csv
+import time
 
 def getFileID(service, name, drive, folder):
     fileID = service.files().list(
@@ -79,6 +80,7 @@ def recursiveCopy(srcDrive, srcFolder, dstDrive, dstFolder, service, tabCount=0)
                 copied = "COPIED"
                 requestBody = {"parents": [dstFolder], "name":file["name"]}
                 service.files().copy(fileId=file["id"],body=requestBody,supportsAllDrives=True).execute()
+                time.sleep(1)
             print(header, fileName, " - ", copied, sep='')
             newID = getFileID(service, fileName, dstDrive, dstFolder)
 

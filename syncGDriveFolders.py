@@ -46,7 +46,6 @@ def getFileList(drive, folder, service):
         # request the next page of files
         request = fileSvc.list_next(request, file_page)
 
-    print(files)
     return files
 
 def recursiveCopy(srcDrive, srcFolder, dstDrive, dstFolder, service, tabCount=0):

@@ -1,4 +1,6 @@
-# Introduction
+# Google Drive Sync
+
+## Introduction
 This script synchronizes two Google Shared Drives completely - all folders, all files, all everything.
 It will copy files from one Shared Drive into another, skipping over files that already exist in the destination drive.
 At the end, a full CSV list will be giving relating the old file locations (filename, path and ID) to the new ones.
@@ -6,7 +8,7 @@ At the end, a full CSV list will be giving relating the old file locations (file
 This script does not delete, move or edit files in the source drive. It only copies the files into the destination drive. 
 This script was not tested for other situations (e.g. copying a folder into another folder). Use at your own risk.
 
-# Installation
+## Installation
 Install the necessary libraries:
 
 `pip install -r requirements.txt`
@@ -23,7 +25,7 @@ You will need to have JSON credentials for a GCP Service Account. If you don't, 
 6 - All done!
 ```
 
-# Usage
+## Usage
 ```
 usage: syncGDriveFolders [-h] [--src SRC] [--dst DST] [--creds CREDS]
 

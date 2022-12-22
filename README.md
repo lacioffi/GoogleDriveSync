@@ -15,9 +15,9 @@ You will need to have JSON credentials for a GCP Service Account. If you don't, 
 
 ```
 1 - Create a new GCP project or select an existing one
-2 - Configure your OAUTH consent screen. On request scopes, add the following path:
+2 - Configure your OAUTH consent screen. Add your domain in the "Authorized Domains" field. On request scopes, add the following path:
         https://www.googleapis.com/auth/drive
-3 - Create a Service Account, and note down the Service Account's email address.
+3 - Create a Service Account, and note down the Service Account's email address. (something like whatever@projectname.iam.gserviceaccount.com)
 4 - Create a JSON key for this Service Account. Save it in this program's folder as "creds.json".
 5 - Add the Service Account's email as an editor/commenter/viewer in the Shared Drives you want to copy from/into
 6 - All done!

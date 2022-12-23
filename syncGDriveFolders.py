@@ -7,14 +7,26 @@ import argparse
 import csv
 import time
 
+
+#Return format - a list of lists (each object is a row)
+#Format - File Type, Old path, Old Id, New Path, New ID
+#Global Variable - YOLO!
+csvResults = []
+
 def getFileID(service, name, drive, folder):
-    fileID = service.files().list(
-        supportsAllDrives=True,
-        corpora="drive",
-        includeItemsFromAllDrives=True,
-        driveId=drive,
-        q="'{}' in parents and trashed = false and name='{}'".format(folder,name)
-    ).execute()["files"][0]["id"]
+    try:
+        fileID = service.files().list(
+            supportsAllDrives=True,
+            corpora="drive",
+            includeItemsFromAllDrives=True,
+            driveId=drive,
+            q="'{}' in parents and trashed = false and name='{}'".format(folder,name)
+        ).execute()["files"][0]["id"]
+    except:
+        #Recursive wait - sometimes, files won't appear via API right after being created
+        #Yes, if this fails, this will infinitely loop. YOLO!
+        time.sleep(0.1)
+        return getFileID(service, name, drive, folder)
     return fileID
 
 def fileExists(file, dstFiles):
@@ -55,10 +67,6 @@ def recursiveCopy(srcDrive, srcFolder, dstDrive, dstFolder, service, tabCount=0)
     srcFiles = getFileList(srcDrive, srcFolder, service)
     dstFiles = getFileList(dstDrive, dstFolder, service)
 
-    #Return format - a list of lists (each object is a row)
-    #Format - File Type, Old path, Old Id, New Path, New ID
-    csvResults = []
-
     #Execute until no new files are found
     for file in srcFiles:
 
@@ -80,7 +88,6 @@ def recursiveCopy(srcDrive, srcFolder, dstDrive, dstFolder, service, tabCount=0)
                 copied = "COPIED"
                 requestBody = {"parents": [dstFolder], "name":file["name"]}
                 service.files().copy(fileId=file["id"],body=requestBody,supportsAllDrives=True).execute()
-                time.sleep(1)
             print(header, fileName, " - ", copied, sep='')
             newID = getFileID(service, fileName, dstDrive, dstFolder)
 
@@ -96,10 +103,11 @@ def recursiveCopy(srcDrive, srcFolder, dstDrive, dstFolder, service, tabCount=0)
 
             #Get created folder's ID
             newID = getFileID(service, fileName, dstDrive, dstFolder)
-
             print(header, fileType, " - ", fileName, " - ", copied, sep='')
-            newResults = recursiveCopy(srcDrive, file["id"], dstDrive, newID, service, tabCount+1)
-            csvResults.extend(newResults)
+
+            #Recurse function
+            recursiveCopy(srcDrive, file["id"], dstDrive, newID, service, tabCount+1)
+            
 
         #CSV Format - File Type, File Name, Old path, Old Id, New Path, New ID
         if (fileType == "FOLDER"):
@@ -108,9 +116,8 @@ def recursiveCopy(srcDrive, srcFolder, dstDrive, dstFolder, service, tabCount=0)
         else:
             oldPath = "https://drive.google.com/file/d/" + fileID
             newPath = "https://drive.google.com/file/d/" + newID
+        
         csvResults.append([fileType, fileName, oldPath, fileID, newPath, newID])
-
-    return csvResults
 
 ####################################################################################################################
 
@@ -134,8 +141,7 @@ service = build('drive', 'v3', credentials=credentials)
 #Copy stuff
 csvResults = []
 csvResults.append(["File Type", "File Name", "Old path", "Old Id", "New Path", "New ID"])
-results = recursiveCopy(srcFolder, srcFolder, dstFolder, dstFolder, service)
-csvResults.extend(results)
+recursiveCopy(srcFolder, srcFolder, dstFolder, dstFolder, service)
 
 #Write to CSV
 print("\n=== Writing to CSV... ===")

@@ -13,6 +13,12 @@ import time
 #Global Variable - YOLO!
 csvResults = []
 
+
+def getExistingFileID(file, dstFiles):
+    for dstFile in dstFiles:
+        if dstFile["name"] == file["name"]:
+            return dstFile["id"]
+
 def getFileID(service, name, drive, folder):
     try:
         fileID = service.files().list(
@@ -88,8 +94,10 @@ def recursiveCopy(srcDrive, srcFolder, dstDrive, dstFolder, service, tabCount=0)
                 copied = "COPIED"
                 requestBody = {"parents": [dstFolder], "name":file["name"]}
                 service.files().copy(fileId=file["id"],body=requestBody,supportsAllDrives=True).execute()
+                newID = getFileID(service, fileName, dstDrive, dstFolder)
+            else:
+                newID = getExistingFileID(file, dstFiles)
             print(header, fileName, " - ", copied, sep='')
-            newID = getFileID(service, fileName, dstDrive, dstFolder)
 
         # If a folder, create a new folder on the destination and recall function
         else:
@@ -100,13 +108,15 @@ def recursiveCopy(srcDrive, srcFolder, dstDrive, dstFolder, service, tabCount=0)
                 copied = "COPIED"
                 requestBody = {"parents": [dstFolder], 'name':file["name"], 'mimeType': 'application/vnd.google-apps.folder'}
                 service.files().create(body=requestBody,supportsAllDrives=True).execute()
+               #Get created folder's ID
+                newID = getFileID(service, fileName, dstDrive, dstFolder)
+            else:
+                newID = getExistingFileID(file, dstFiles)
 
-            #Get created folder's ID
-            newID = getFileID(service, fileName, dstDrive, dstFolder)
             print(header, fileType, " - ", fileName, " - ", copied, sep='')
-
             #Recurse function
             recursiveCopy(srcDrive, file["id"], dstDrive, newID, service, tabCount+1)
+
             
 
         #CSV Format - File Type, File Name, Old path, Old Id, New Path, New ID

@@ -19,7 +19,7 @@ def getExistingFileID(file, dstFiles):
         if dstFile["name"] == file["name"]:
             return dstFile["id"]
 
-def getFileID(service, name, drive, folder):
+def getFileID(service, name, drive, folder, sleepTime=0.1):
     try:
         fileID = service.files().list(
             supportsAllDrives=True,
@@ -31,8 +31,8 @@ def getFileID(service, name, drive, folder):
     except:
         #Recursive wait - sometimes, files won't appear via API right after being created
         #Yes, if this fails, this will infinitely loop. YOLO!
-        time.sleep(0.1)
-        return getFileID(service, name, drive, folder)
+        time.sleep(sleepTime)
+        return getFileID(service, name, drive, folder, sleepTime+1)
     return fileID
 
 def fileExists(file, dstFiles):

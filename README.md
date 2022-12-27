@@ -9,6 +9,7 @@ This script does not delete, move or edit files in the source drive. It only cop
 This script was not tested for other situations (e.g. copying a folder into another folder). Use at your own risk.
 
 This script does NOT preserve permissions at the file or folder level. All files copied will only be available to the drive's viewers/managers/editors.
+This script does NOT properly handle file names - if you have files with commas, slashes or other funky things, you're going to get bugs.
 
 ## Installation
 Install the necessary libraries:

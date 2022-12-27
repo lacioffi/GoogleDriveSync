@@ -5,11 +5,11 @@ This script synchronizes two Google Shared Drives completely - all folders, all 
 It will copy files from one Shared Drive into another, skipping over files that already exist in the destination drive.
 At the end, a full CSV list will be giving relating the old file locations (filename, path and ID) to the new ones.
 
-This script does not delete, move or edit files in the source drive. It only copies the files into the destination drive. 
-This script was not tested for other situations (e.g. copying a folder into another folder). Use at your own risk.
-
-This script does NOT preserve permissions at the file or folder level. All files copied will only be available to the drive's viewers/managers/editors.
-This script does NOT properly handle file names - if you have files with commas, slashes or other funky things, you're going to get bugs.
+* This script does NOT delete, move or edit files in the source drive. It only copies the files into the destination drive. 
+* This script was NOT tested for other situations (e.g. copying a folder into another folder). Use at your own risk.
+* This script does NOT preserve permissions at the file or folder level. All files copied will only be available to the drive's viewers/managers/editors.
+* This script does NOT properly handle file names - if you have files with commas, slashes or other funky things, you're going to get bugs.
+* This script does NOT look at file contents - if any file's contents are changed between executions, they will not be copied again. If a file changes name, they will be copied again, but the version with the old name on the destination drive will not be deleted.
 
 ## Installation
 Install the necessary libraries:
